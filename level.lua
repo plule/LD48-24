@@ -15,11 +15,11 @@ Level = Class{
 
 function Level:draw()
 	if(self.type == "run") then
-		love.graphics.setColor(255,255,255)
+		love.graphics.setColor(255,255,255, 170)
 		love.graphics.rectangle("fill", self.x1, self.drawy, self.x1+self.x2, self.wheight)
 		for _,obstacle in ipairs(self.obstacles) do
 			if(obstacle.type == "cactus") then
-				love.graphics.setColor(0,255,0)
+				love.graphics.setColor(0,255,0, 170)
 				love.graphics.rectangle("fill", obstacle.x-16, self.drawy, 32, -64)
 			end
 		end
