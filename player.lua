@@ -12,12 +12,42 @@ Player = Class{
 		self.breathing = true
 		self.swimming = false
 		self.onGround = false
+		self.dieText = ""
+		self.transformation = nil
+		
+		self.form = "runner" --siren bird
 	end}
+
+local reasons = {
+	runner = {
+		cactus = "You ran into a cactus.",
+		bird = "A bird killed you. It's a bad bird.",
+		water = "Your lung are full of water. You die.",
+		jellyfish = "Somehow you manage to be killed by a jellyfish before drowning",
+		fall = "You broke your legs."},
+	siren = {
+		cactus = "I don't know how it's possible, but a cactus killed you while you were a fish.",
+		bird = "A water-bird killed you.",
+		air = "You can't breathe in the air with gills",
+		fall = "You are not a flying fish. Sorry.",
+		water = "Even a siren can drown.",
+		jellyfish = "Be careful of the jellyfishes. It's a bad thing. Really."},
+	bird = {
+		cactus = "A cactus destroyed your wings. You die out of sadness.",
+		bird = "This bird was stronger than you.",
+		water = "You are not a flying fish. Sorry.",
+		ground = "You crashed on the ground. Be careful.",
+		jellyfish = "This is not supposed to happened.",
+		ceiling = "Like Icare, you died."}
+}
 
 function Player:draw()
 	love.graphics.setColor(255,255,255)
+	love.graphics.print("breathe  "..tostring(self.breathe), self:getX(), Height-self:getY()-115)
 	love.graphics.print("swimming "..tostring(self.swimming), self:getX(), Height-self:getY()-100)
-	love.graphics.print("onGround "..tostring(self.onGround), self:getX(), Height-self:getY()-70)
+	love.graphics.print("onGround "..tostring(self.onGround), self:getX(), Height-self:getY()-85)
+	love.graphics.print("form     "..self.form, self:getX(), Height-self:getY()-70)
+	love.graphics.print("die      "..self.dieText, self:getX(), Height-self:getY()-55)
 	love.graphics.setColor(255,0,255, 170)
 	if(not self.breathing) then
 		love.graphics.setColor(255, 0, 0, 170)
@@ -27,27 +57,47 @@ function Player:draw()
 end
 
 function Player:jump()
-	self.speedy = 1000
+	if(self.onGround) then
+		self.speedy = 1000
+	end
 end
 
 function Player:crouch()
-	self.crouchid = tween(0.25, self, {crouchy = 16}, 'outCubic',
-						  function()
-							  self.crouchid = tween(0.25, self, {crouchy = 0}, 'inCubic',
-													function()
-														self.crouchid = nil
-													end)
-						  end)
+	if(self.onGround) then
+		self.crouchid = tween(0.25, self, {crouchy = 16}, 'outCubic',
+							  function()
+								  self.crouchid = tween(0.25, self, {crouchy = 0}, 'inCubic',
+														function()
+															self.crouchid = nil
+														end)
+							  end)
+	end
 end
 
 function Player:update(dt)
+	-- Die conditions
+	if(self.form == "siren" and not self.swimming and self.onGround) then
+		self:die("air")
+	elseif((self.form == "runner" or self.form == "bird") and self.swimming) then
+		self:die("water")
+	end
+
 	-- Input
-	if(self.swimming) then
+	if(self.form == "siren" and self.swimming) then
 		if(love.keyboard.isDown("up")) then
 			self.speedy = 500
 		elseif(love.keyboard.isDown("down")) then
 			self.speedy = -500
 		end
+	end
+
+	if(not self.breathing) then
+		self.breathe = self.breathe - dt / 5
+		if(self.breathe < 0) then
+			self:die("water")
+		end
+	else
+		self.breathe = 1
 	end
 
 	-- Science
@@ -60,13 +110,36 @@ function Player:update(dt)
 end
 
 function Player:keypressed(key)
-	if(self.onGround) then
+	if(key == "f1") then
+		self:transformTo("runner")
+	elseif(key == "f2") then
+		self:transformTo("siren")
+	elseif(key == "f3") then
+		self:transformTo("bird")
+	end
+	if(self.form == "runner") then
 		if(key == "up") then
 			self:jump()
 		elseif(key == "down") then
 			self:crouch()
 		end
+	elseif(self.form == "bird") then
+		if(key == "up") then
+			self.speedy = 1000
+		end
 	end
+end
+
+function Player:transformTo(form)
+	if(self.transformation) then
+		Timer.cancel(self.transformation)
+	end
+	self.transformation = Timer.add(3, function() self.form = form end)
+end
+
+function Player:die(reason)
+	self.dieText = reasons[self.form][reason]
+	Timer.add(1, function() self.dieText = "" end)
 end
 
 function Player:acting()

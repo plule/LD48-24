@@ -11,6 +11,7 @@ function love.load()
 end
 
 function love.update(dt)
+	Timer.update(dt)
 	if(dt > 0) then
 		tween.update(dt)
 		Gamestate.update(dt)
