@@ -1,11 +1,15 @@
+Class = require "hump.class"
+
+require "game"
+
 function love.load()
-	time = 0
+	Height = love.graphics.getHeight()
+	Gamestate.switch(game)
+	Gamestate.registerEvents()
 end
 
 function love.update(dt)
-	time = time+dt
 end
 
 function love.draw()
-	love.graphics.print(time, 100, 100)
 end

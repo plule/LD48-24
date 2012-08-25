@@ -11,7 +11,7 @@ lin32=love-bin/love32
 lin64=love-bin/love64
 
 game=ld
-sources=*.lua # */*.lua
+sources=*.lua */*.lua
 res=
 readme=README
 version=snaphsot
