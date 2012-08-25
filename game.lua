@@ -10,8 +10,8 @@ function game:enter()
 	self.player = Player("player", 100, 500)
 	self.levels = {
 		Level("run1", "run", 0, 2000, 100),
-		Level("swim", "swim", 0, 6000, 70),
-		Level("run2", "run", 5000, 6000, 100)
+		Level("swim", "swim", 0, 10000, 70),
+		Level("run2", "run", 5000, 9000, 100)
 	}
 	self.levels[1]:setObstacles(
 		{{x=500,type="cactus"},{x=800,type="cactus"},{x=1200,type="cactus"},
