@@ -13,7 +13,6 @@ Player = Class{
 
 function Player:draw()
 	love.graphics.setColor(255,0,255, 170)
-	love.graphics.print(self.jumpy, self.x,50)
 	love.graphics.rectangle(
 		"fill", self:getX()-self:getLX()/2, Height-self:getY()-self:getLY(), self:getLX(), self:getLY())
 end
