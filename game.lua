@@ -7,9 +7,9 @@ end
 
 function game:enter()
 	self.time = 0
-	self.player = Player(100, 500)
+	self.player = Player("player", 100, 500)
 	self.levels = {
-		Level("run", 0, 10000)
+		Level("run1", "run", 0, 10000)
 	}
 	self.levels[1]:setObstacles({{x=500,type="cactus"},{x=800,type="cactus"},{x=1200,type="cactus"}})
 	self.currLevel = self.levels[1]

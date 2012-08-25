@@ -1,5 +1,6 @@
 Player = Class{
-	function(self, x, y)
+	function(self,id, x, y)
+		self.id = id
 		self.x = x
 		self.y = y
 		self.lx = 32
@@ -27,4 +28,17 @@ function Player:jump()
 													end)
 							end)
 	end
+end
+
+function Player:getX()
+	return self.x
+end
+function Player:getY()
+	return self.y-self.jumpy
+end
+function Player:getLX()
+	return self.lx
+end
+function Player:getLY()
+	return self.ly
 end
