@@ -5,14 +5,20 @@ Player = Class{
 		self.y = y
 		self.lx = 32
 		self.ly = 32
+		self.speedy = 0
 		self.jumpy = 0
 		self.jumpid = nil
 		self.crouchy = 0
 		self.crouchid = nil
+		self.breathe = 1
+		self.breathing = true
 	end}
 
 function Player:draw()
 	love.graphics.setColor(255,0,255, 170)
+	if(not self.breathing) then
+		love.graphics.setColor(255, 0, 0, 170)
+	end
 	love.graphics.rectangle(
 		"fill", self:getX()-self:getLX()/2, Height-self:getY()-self:getLY(), self:getLX(), self:getLY())
 end
@@ -39,6 +45,10 @@ function Player:crouch()
 													end)
 							end)
 	end
+end
+
+function Player:update(dt)
+	self.y = self.y + self.speedy*dt
 end
 
 function Player:acting()
