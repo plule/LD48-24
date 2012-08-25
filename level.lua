@@ -33,32 +33,29 @@ function Level:draw()
 	end
 end
 
-function Level:update(dt, player)
+function Level:update(dt)
 	for _,obstacle in ipairs(self.obstacles) do
 		obstacle:update(dt)
 	end
-	
+end
+
+
+function Level:act_on(player)
+	local px,py,plx,ply = player:getX(), player:getY(), player:getLX(), player:getLY()
 	if(self.type == "run") then
-		player.y = self:getY(player.x)
+		if(px > self.x1 and px < self.x2 and player.y <= self:getY(player.x)) then
+			player.y = self:getY(player.x)
+			player.onGround = true
+		end
 	end
+
 	if(self.type == "swim") then
-		player.speedy = 0
-		if(love.keyboard.isDown("up")) then
-			   player.speedy = 150
-		end
-		if(love.keyboard.isDown("down")) then
-			   player.speedy = -150
-		end
 		local breathing = true
-		if(player:getY()+player:getLY() < self:getY(game:getX())) then
-			breathing = false
+		if(px > self.x1 and px < self.x2 and py+ply < self:getY(player.x)) then
+			player.swimming = true
 		end
-		player.breathing = breathing
-	end
-	player:update(dt)
-	if(self.type == "swim") then
-		if(player:getY() > self:getY(game:getX()) - player:getLY()/2) then
-			player.y = self:getY(game:getX()) - player:getLY()/2
+		if(px > self.x1 and px < self.x2 and py+ply < self:getY(game:getX())) then
+			player.breathing = false
 		end
 	end
 end
@@ -85,14 +82,4 @@ function Level:getY(x)
 		if(x > x2-slope) then return y-(x-x2+slope)*(y/slope) end
 	end
 	return y
-end
-
-function Level:keypressed(key, player)
-	if(self.type == "run") then
-		if(key == "up") then
-			player:jump()
-		elseif(key == "down") then
-			player:crouch()
-		end
-	end
 end

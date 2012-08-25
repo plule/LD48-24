@@ -10,7 +10,7 @@ function game:enter()
 	self.player = Player("player", 100, 500)
 	self.levels = {
 		Level("run1", "run", 0, 2000, 100),
-		Level("swim", "swim", 2000, 5000, 70),
+		Level("swim", "swim", 0, 6000, 70),
 		Level("run2", "run", 5000, 6000, 100)
 	}
 	self.levels[1]:setObstacles(
@@ -20,21 +20,20 @@ function game:enter()
 	self.levels[3]:setObstacles(
 		{{x=500,type="cactus"},{x=800,type="cactus"},{x=1200,type="cactus"},
 		 {x=700, type="bird"},{x=1000, type="bird"}})
-	self.currLevel = self.levels[1]
 end
 
 function game:update(dt)
 	self.time = self.time + dt
-	self.player.x = self:getX()
-
+	local player = self.player
+	player.x = self:getX()
+	self.player:update(dt)
+	player.onGround = false
+	player.swimming = false
+	player.breathing = true
 	for _,level in ipairs(self.levels) do
-		local x = self.player:getX()
-		if(x > level.x1 and x < level.x2) then
-			self.currLevel = level
-		end
+		level:update(dt)
+		level:act_on(self.player)
 	end
-
-	self.currLevel:update(dt, self.player)
 end
 
 function game:draw()
@@ -51,5 +50,5 @@ function game:getX()
 end
 
 function game:keypressed(key)
-	self.currLevel:keypressed(key, self.player)
+	self.player:keypressed(key)
 end
