@@ -24,15 +24,25 @@ function Level:draw()
 	end
 end
 
+function Level:update(dt)
+	for _,obstacle in ipairs(self.obstacles) do
+		obstacle:update(dt)
+	end
+end
+
 function Level:setObstacles(obstacles)
 	self.obstacles = {}
-	print("---------")
 	for _,obstacle in ipairs(obstacles) do
-		print(obstacle.x)
 		table.insert(self.obstacles, Obstacle("cactus", obstacle.type, obstacle.x, self:getY(obstacle.x), 32, 60))
 	end
 end
 
 function Level:getY(x)
 	return self.y
+end
+
+function Level:keypressed(key, player)
+	if(key == "up") then
+		player:jump()
+	end
 end

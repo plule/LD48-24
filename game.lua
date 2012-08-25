@@ -19,6 +19,7 @@ function game:update(dt)
 	self.time = self.time + dt
 	self.player.y = self.currLevel:getY(self.player.x)
 	self.player.x = self:getX()
+	self.currLevel:update(dt)
 end
 
 function game:draw()
@@ -33,7 +34,5 @@ function game:getX()
 end
 
 function game:keypressed(key)
-	if(key == "up") then
-		self.player:jump()
-	end
+	self.currLevel:keypressed(key, self.player)
 end

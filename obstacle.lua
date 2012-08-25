@@ -16,6 +16,9 @@ function Obstacle:draw()
 	love.graphics.rectangle("fill", self.x-self.lx/2, Height - self.y - self.ly, self.lx, self.ly)
 end
 
+function Obstacle:update(dt)
+end
+
 function Obstacle:getX()
 	return self.x
 end
