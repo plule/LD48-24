@@ -33,9 +33,12 @@ function Level:draw()
 	end
 end
 
-function Level:update(dt)
+function Level:update(dt, player)
 	for _,obstacle in ipairs(self.obstacles) do
 		obstacle:update(dt)
+		if(collide(obstacle,player)) then
+			player:die(obstacle.type)
+		end
 	end
 end
 

@@ -31,7 +31,7 @@ function game:update(dt)
 	player.swimming = false
 	player.breathing = true
 	for _,level in ipairs(self.levels) do
-		level:update(dt)
+		level:update(dt, self.player)
 		level:act_on(self.player)
 	end
 end
