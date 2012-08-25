@@ -67,11 +67,12 @@ function Level:setObstacles(obstacles)
 	self.obstacles = {}
 	for _,obstacle in ipairs(obstacles) do
 		local y = obstacle.y
-		local x = obstacle.x + self.x1
+		local x = obstacle.x + obstacleOffset
+		obstacleOffset = x
 		if(y == nil) then
 			y = self:getY(x)
 			if (obstacle.type == "bird") then
-				y = y+20
+				y = y+50
 			end
 		end
 		table.insert(self.obstacles, Obstacle.create(obstacle.type, x, y))

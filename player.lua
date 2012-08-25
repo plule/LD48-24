@@ -3,8 +3,8 @@ Player = Class{
 		self.id = id
 		self.x = x
 		self.y = y
-		self.lx = 32
-		self.ly = 32
+		self.lx = 64
+		self.ly = 64
 		self.speedy = 0
 		self.crouchy = 0
 		self.crouchid = nil
@@ -31,7 +31,8 @@ local reasons = {
 		air = "You can't breathe in the air with gills",
 		fall = "You are not a flying fish. Sorry.",
 		water = "Even a siren can drown.",
-		jellyfish = "Be careful of the jellyfishes. It's a bad thing. Really."},
+		jellyfish = "Be careful of the jellyfishes. It's a bad thing. Really.",
+		badfish = "This is a bad fish. Not a friend."},
 	bird = {
 		cactus = "A cactus destroyed your wings. You die out of sadness.",
 		bird = "This bird was stronger than you.",
@@ -48,17 +49,22 @@ function Player:draw()
 	love.graphics.print("onGround "..tostring(self.onGround), self:getX(), Height-self:getY()-85)
 	love.graphics.print("form     "..self.form, self:getX(), Height-self:getY()-70)
 	love.graphics.print("die      "..self.dieText, self:getX(), Height-self:getY()-55)
-	love.graphics.setColor(255,0,255, 170)
-	if(not self.breathing) then
-		love.graphics.setColor(255, 0, 0, 170)
+	if(self.crouchid ~= nil) then
+		love.graphics.setColor(255,0,255, 170)
+		if(not self.breathing) then
+			love.graphics.setColor(255, 0, 0, 170)
+		end
+		love.graphics.rectangle(
+			"fill", self:getX()-self:getLX()/2, Height-self:getY()-self:getLY(), self:getLX(), self:getLY())
+	else
+		love.graphics.setColor(255,255,255)
+		game.animations.runner:draw(self:getX()-self:getLX()/2, Height-self:getY()-self:getLY())
 	end
-	love.graphics.rectangle(
-		"fill", self:getX()-self:getLX()/2, Height-self:getY()-self:getLY(), self:getLX(), self:getLY())
 end
 
 function Player:jump()
 	if(self.onGround) then
-		self.speedy = 1000
+		self.speedy = 1100
 	end
 end
 
@@ -105,7 +111,7 @@ function Player:update(dt)
 	if(not self.swimming) then
 		self.speedy = self.speedy-5000*dt
 	else
-		self.speedy = self.speedy-0.01*self.speedy
+		self.speedy = self.speedy-self.speedy*0.05
 	end
 end
 
@@ -139,6 +145,7 @@ end
 
 function Player:die(reason)
 	self.dieText = reasons[self.form][reason]
+	if(self.dieText == nil) then self.dieText = "You died." end
 	Timer.add(1, function() self.dieText = "" end)
 end
 
