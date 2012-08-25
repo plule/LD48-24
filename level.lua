@@ -20,7 +20,7 @@ function Level:draw()
 		for _,obstacle in ipairs(self.obstacles) do
 			if(obstacle.type == "cactus") then
 				love.graphics.setColor(0,255,0, 170)
-				love.graphics.rectangle("fill", obstacle.x-16, self.drawy, 32, -64)
+				love.graphics.rectangle("fill", obstacle.x-16, self.drawy, 32, -60)
 			end
 		end
 	end

@@ -1,5 +1,3 @@
-Gamestate = require "hump.gamestate"
-
 require "player"
 require "level"
 
@@ -13,7 +11,7 @@ function game:enter()
 	self.levels = {
 		Level("run", 0, 10000)
 	}
-	self.levels[1]:setObstacles({{x=500,type="cactus"},{x=800,type="cactus"},{x=1200,type="cactus"})
+	self.levels[1]:setObstacles({{x=500,type="cactus"},{x=800,type="cactus"},{x=1200,type="cactus"}})
 	self.currLevel = self.levels[1]
 end
 
@@ -32,4 +30,10 @@ end
 
 function game:getX()
 	return self.time*400
+end
+
+function game:keypressed(key)
+	if(key == "up") then
+		self.player:jump()
+	end
 end
