@@ -9,11 +9,15 @@ Obstacle = Class{
 	end}
 
 function Obstacle:draw()
-	love.graphics.setColor(0,255,0,170)
+	if(self.type == "cactus") then
+		love.graphics.setColor(0,255,0,170)
+	elseif(self.type == "bird") then
+		love.graphics.setColor(0,0,255,170)
+	end
 	if(collide(game.player, self)) then
 		love.graphics.setColor(255,0,0,170)
 	end
-	love.graphics.rectangle("fill", self.x-self.lx/2, Height - self.y - self.ly, self.lx, self.ly)
+	love.graphics.rectangle("fill", self.x-self:getLX()/2, Height-self:getY() - self:getLY(), self:getLX(), self:getLY())
 end
 
 function Obstacle:update(dt)

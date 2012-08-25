@@ -33,7 +33,18 @@ end
 function Level:setObstacles(obstacles)
 	self.obstacles = {}
 	for _,obstacle in ipairs(obstacles) do
-		table.insert(self.obstacles, Obstacle("cactus", obstacle.type, obstacle.x, self:getY(obstacle.x), 32, 60))
+		local x = obstacle.x
+		local y = 0
+		local lx = 32
+		local ly = 0
+		if(obstacle.type == "cactus") then
+			y = self:getY(x)
+			ly = 60
+		elseif(obstacle.type == "bird") then
+			y = self:getY(x)+30
+			ly = 10
+		end
+		table.insert(self.obstacles, Obstacle(obstacle.type, obstacle.type, x,y,lx,ly))
 	end
 end
 
@@ -44,5 +55,7 @@ end
 function Level:keypressed(key, player)
 	if(key == "up") then
 		player:jump()
+	elseif(key == "down") then
+		player:crouch()
 	end
 end

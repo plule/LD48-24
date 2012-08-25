@@ -11,7 +11,9 @@ function game:enter()
 	self.levels = {
 		Level("run1", "run", 0, 10000)
 	}
-	self.levels[1]:setObstacles({{x=500,type="cactus"},{x=800,type="cactus"},{x=1200,type="cactus"}})
+	self.levels[1]:setObstacles(
+		{{x=500,type="cactus"},{x=800,type="cactus"},{x=1200,type="cactus"},
+		 {x=700, type="bird"},{x=1000, type="bird"}})
 	self.currLevel = self.levels[1]
 end
 
