@@ -29,7 +29,8 @@ function game:enter()
 --		run2=Level("run2", "run", 4000, 5000, 100),
 --		run3=Level("run3", "run", 5000, 6000, 100),
 --		swim2=Level("swim2", "swim", 5500, 7000, 70),
-		ceiling=Level("ceiling", "ceiling", 0, 2000, 260)
+		ceiling=Level("ceiling", "ceiling", 0, 2000, 260),
+		air = Level("air", "air", 0, 10000, 0)
 	}
 	obstacleOffset = 0
 	self.levels.run1:setObstacles(
@@ -45,6 +46,8 @@ function game:enter()
 	self.levels.swim2:setObstacles({})]]
 	obstacleOffset = self.levels.ceiling.x1
 	self.levels.ceiling:setObstacles({{x=1100, type="stalactite"},{x=600, type="stalactite"}})--,{x=600, type="stalactite"},{x=600, type="stalactite"}})
+	obstacleOffset = self.levels.air.x1
+	self.levels.air:setObstacles({{x=3500, type="bird"}, {x=4500, type="bird"}})
 end
 
 function game:update(dt)

@@ -9,7 +9,7 @@ Obstacle = Class{
 		self.color = color
 		self.animation = animation
 		self.sprite = sprite
-		local speed = 0
+		self.speed = 0
 	end}
 
 function Obstacle:draw()
@@ -32,8 +32,10 @@ end
 function Obstacle.create(type, x, y)
 	if(type == "cactus") then
 		return Obstacle(type, type, x, y, 32, 60, {0,255,255,170}, nil, game.sprites.cactus)
-	elseif(type == "bird") then
-		return Obstacle(type, type, x, y, 32, 64, {200, 200, 200, 170})
+	elseif(type == "bird" or type == "stupidbird") then
+		local bird = Obstacle(type, type, x, y, 32, 10, {200, 200, 200, 170})
+		bird.speed = math.random(200,300)
+		return bird
 	elseif(type == "jellyfish") then
 		return Obstacle(type, type, x, y, 16, 32, {50, 50, 200, 170}, game.animations.jellyfish)
 	elseif(type == "badfish") then
@@ -69,6 +71,8 @@ function Obstacle:update(dt)
 			end
 			self.y = self:getY()+speed*dt
 		end
+	elseif (self.type == "stupidbird") then
+		self.x = self:getX()-speed*dt
 	end
 end
 
