@@ -1,10 +1,15 @@
 menu = Gamestate.new()
 function menu:init()
-
+	self.music = love.audio.newSource("snd/menu.ogg", "stream")
+	self.music:setLooping(true)
 end
 
 function menu:enter()
+	love.audio.play(self.music)
+end
 
+function menu:leave()
+	love.audio.stop()
 end
 
 function menu:draw()

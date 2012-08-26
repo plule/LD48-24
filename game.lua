@@ -22,9 +22,12 @@ function game:init()
 		bird = newAnimation(self.sprites.bird, 32, 16, 0.1, 0)
 	}
 	self.animations.jellyfish:setMode("bounce")
+	self.music = love.audio.newSource("snd/music.ogg", "stream")
 end
 
 function game:enter()
+	love.audio.stop()
+	love.audio.play(self.music)
 	self.time = 0
 	self.player = Player("player", 0, 100)
 	self.player.form = "runner"
