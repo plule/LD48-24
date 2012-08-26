@@ -1,7 +1,8 @@
 require("obstacle")
 
 Level = Class{
-	function(self, id, type, x1, x2, y)
+	function(self, order, id, type, x1, x2, y)
+		self.order = order
 		self.id = id
 		self.x1 = x1
 		self.x2 = x2
@@ -10,6 +11,12 @@ Level = Class{
 		self.slope = 500
 		self.obstacles = {}
 	end}
+
+Level.DefaultForms = {
+	run = "runner",
+	swim = "siren",
+	fly = "bird"
+}
 
 function Level:draw()
 	local y = Height-self.y
@@ -45,9 +52,12 @@ end
 function Level:act_on(player)
 	local px,py,plx,ply = player:getX(), player:getY(), player:getLX(), player:getLY()
 	if(self.type == "run") then
-		if(px > self.x1 and px < self.x2 and player.y <= self:getY(player.x)+1) then
+		if(px > self.x1 and px < self.x2 and player.y <= self:getY(player.x)) then
 			player.y = self:getY(player.x)
 			if(player.speedy < 0) then player.speedy = 0 end
+			player.onGround = true
+		end
+		if(px > self.x1 and px < self.x2 and player.y <= self:getY(player.x)+3) then
 			player.onGround = true
 		end
 	elseif(self.type == "swim") then

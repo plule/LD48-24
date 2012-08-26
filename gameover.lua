@@ -6,9 +6,11 @@ function gameover:init()
 
 end
 
-function gameover:enter(previous, message)
+function gameover:enter(previous, message, level)
 	self.previous = previous
 	self.message = message
+	self.level = level
+	print("gameover : "..level.id)
 end
 
 function gameover:draw()
@@ -18,6 +20,6 @@ end
 
 function gameover:keypressed(key)
 	if(key == "return") then
-		Gamestate.switch(self.previous)
+		Gamestate.switch(self.previous, self.level)
 	end
 end

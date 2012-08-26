@@ -3,7 +3,7 @@ Player = Class{
 		self.id = id
 		self.x = x
 		self.y = y
-		self.lx = 60
+		self.lx = 30
 		self.ly = 60
 		
 		self.spriteLX = 64
@@ -50,6 +50,7 @@ local reasons = {
 
 function Player:draw()
 	love.graphics.setColor(255,255,255)
+--	love.graphics.print("level    "..self:getLevel().id, self:getX(), Height-self:getY()-130)
 	love.graphics.print("breathe  "..tostring(self.breathe), self:getX(), Height-self:getY()-115)
 	love.graphics.print("swimming "..tostring(self.swimming), self:getX(), Height-self:getY()-100)
 	love.graphics.print("onGround "..tostring(self.onGround), self:getX(), Height-self:getY()-85)
@@ -71,7 +72,7 @@ function Player:draw()
 		game.animations.crouch:draw(self:getX()-self.spriteLX/2, Height-self.spriteLY-self:getY())
 	else
 		love.graphics.setColor(255,255,255)
-		game.animations.runner:draw(self:getX()-self:getLX()/2, Height-self:getY()-self:getLY())
+		game.animations.runner:draw(self:getX()-self.spriteLX/2, Height-self:getY()-self.spriteLY)
 	end
 end
 
@@ -136,7 +137,7 @@ function Player:update(dt)
 	-- Science
 	self.y = self.y + self.speedy*dt
 	if(not self.swimming) then
-		self.speedy = self.speedy-5000*dt
+		self.speedy = self.speedy-5000*dt-self.speedy*0.01
 	elseif(form == "siren") then
 		self.speedy = self.speedy-self.speedy*0.05
 	else
@@ -174,11 +175,45 @@ function Player:transformTo(form)
 end
 
 function Player:die(reason)
+	print("---------------------")
+	print("die : "..reason)
 	self.dieText = reasons[self.form][reason]
 	if(self.dieText == nil) then self.dieText = "You died." end
-	Timer.add(1, function() self.dieText = "" end)
-	--Gamestate.switch(gameover, self.dieText)
+	print(self.dieText)
+	--Timer.add(1, function() self.dieText = "" end)
+	Gamestate.switch(gameover, self.dieText, self:getLevel())
 end
+
+function Player:inLevel(level, since)
+	return (self:getX() > level.x1 + (500*since) and self:getX() < level.x2 + (500*since))
+end
+
+function Player:getLevel()
+	print("getlevel")
+	local level = self:getLevelFind()
+	print(level.id)
+	if(game.startlevel ~= nil and game.startlevel.order > level.order) then
+		return game.startlevel
+	else
+		return level
+	end
+end
+
+function Player:getLevelFind()
+	local inlevel = nil
+	for _,level in pairs(game.levels) do
+		if((level.type == "swim" or level.type == "run" or level.type == "fly") and self:inLevel(level, 3)) then
+			return level
+		end
+	end
+	for _,level in pairs(game.levels) do
+		if((level.type == "swim" or level.type == "run" or level.type == "fly") and self:inLevel(level, 0)) then
+			return level
+		end
+	end
+	return game.startlevel
+end
+		
 
 function Player:acting()
 	return (not self.onGround) or (self.crouchid ~= nil)

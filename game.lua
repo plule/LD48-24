@@ -34,23 +34,36 @@ function game:init()
 	self.transformsound:setVolume(0.3)
 end
 
-function game:enter()
-	love.audio.stop()
-	love.audio.play(self.music)
-	self.time = 0
+function game:enter(previous, level)
+	print("enter")
 	self.player = Player("player", 0, 100)
+	self.music:rewind()
+	self.time = 0
 	self.player.form = "runner"
-	self.levels = {
-		run1=Level("run1", "run", 0, 9000, 100),
-		swim1=Level("swim1", "swim", 8000, 21000, 70),
-		run2=Level("run2", "run", 20000, 23000, 100),
-		run3=Level("run3", "run", 35000, 45000, 100),
-		swim2=Level("swim2", "swim", 44000, 50000, 70),
-		run4=Level("run4", "run", 48000, 55000, 70),
+	self.startlevel = level
+	if(level ~= nil) then
+		print("from "..level.id)
+		self.x = level.x1
+		self.time = self:getTime(self.x)
+		self.player.form = Level.DefaultForms[level.type]
+		self.music:seek(self.time, "seconds")
+		print("seeked")
+	end
 
-		ceiling=Level("ceiling", "ceiling", 0, 22000, 260),
-		ceiling2=Level("ceiling2", "ceiling", 36000, 47000, 260),
-		air = Level("air", "air", 0, 50000, 0)
+	love.audio.play(self.music)
+	print("played")
+	self.levels = {
+		run1=Level(1,"run1", "run", 0, 9000, 100),
+		swim1=Level(2,"swim1", "swim", 8000, 21000, 70),
+		run2=Level(3,"run2", "run", 20000, 23000, 100),
+		fly=Level(4,"fly1", "fly", 23000, 35000, 100),
+		run3=Level(5,"run3", "run", 35000, 45000, 100),
+		swim2=Level(6,"swim2", "swim", 44000, 50000, 70),
+		run4=Level(7,"run4", "run", 48000, 55000, 70),
+
+		ceiling=Level(8,"ceiling", "ceiling", 0, 22000, 260),
+		ceiling2=Level(9,"ceiling2", "ceiling", 36000, 47000, 260),
+		air = Level(10,"air", "air", 0, 50000, 0)
 	}
 	local levels = self.levels
 	obstacleOffset = 0
@@ -120,6 +133,7 @@ function game:enter()
 	levels.swim2:setObstacles({{x=500, y=-100, type="stupidfish"},{x=50, y=0, type="jellyfish"},{x=50, y=50, type="stupidfish"},{x=100, y=-100, type="badfish"},{x=50, y=0, type="badfish"}})
 	levels.run4:setObstacles({{x=1800, y=120, type="stupidbird"},{x=0, y=150, type="stupidbird"},{ x=200, y=150, type="bird"}})
 --	self.levels.air:setObstacles({{x=3300, y=500, type="bird"}, {x=4500, y=500, type="stupidbird"}})
+	print("initialized")
 end
 
 function game:update(dt)
@@ -177,6 +191,10 @@ end
 
 function game:getX()
 	return self.time*500
+end
+
+function game:getTime(x)
+	return x/500
 end
 
 function game:keypressed(key)

@@ -42,7 +42,7 @@ end
 
 function Obstacle.create(type, x, y)
 	if(type == "cactus") then
-		return Obstacle(type, type, x, y, 25, 60, {0,255,255,170}, nil, game.sprites.cactus)
+		return Obstacle(type, type, x, y, 20, 60, {0,255,255,170}, nil, game.sprites.cactus)
 	elseif(type == "bird" or type == "stupidbird") then
 		local bird = Obstacle(type, type, x, y, 32, 16, {0, 200, 200, 170}, game.animations.bird)
 		bird.speed = math.random(200,300)
