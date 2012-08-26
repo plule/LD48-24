@@ -10,6 +10,16 @@ Obstacle = Class{
 		self.animation = animation
 		self.sprite = sprite
 		self.speed = 0
+		self.spritelx = lx
+		self.spritely = ly
+		if(animation) then
+			self.spritelx = animation.fw
+			self.spritely = animation.fh
+		end
+		if(sprite) then
+			self.spritelx = sprite:getWidth()
+			self.spritely = sprite:getHeight()
+		end
 	end}
 
 function Obstacle:draw()
@@ -17,7 +27,7 @@ function Obstacle:draw()
 --	if(collide(game.player, self)) then
 --		love.graphics.setColor(255,0,0,170)
 --	end
-	local x,y = self.x-self:getLX()/2, Height-self:getY() - self:getLY()
+	local x,y = self.x-self.spritelx/2, Height-self.spritely-self.y -- god why
 	if(self.animation ~= nil) then
 		love.graphics.setColor(255,255,255)
 		self.animation:draw(x,y)
@@ -27,27 +37,28 @@ function Obstacle:draw()
 	else
 		love.graphics.rectangle("fill", x,y, self:getLX(), self:getLY())
 	end
+--	love.graphics.rectangle("fill", x,y, self:getLX(), self:getLY())
 end
 
 function Obstacle.create(type, x, y)
 	if(type == "cactus") then
-		return Obstacle(type, type, x, y, 32, 60, {0,255,255,170}, nil, game.sprites.cactus)
+		return Obstacle(type, type, x, y, 25, 60, {0,255,255,170}, nil, game.sprites.cactus)
 	elseif(type == "bird" or type == "stupidbird") then
-		local bird = Obstacle(type, type, x, y, 32, 10, {0, 200, 200, 170})
+		local bird = Obstacle(type, type, x, y, 32, 16, {0, 200, 200, 170}, game.animations.bird)
 		bird.speed = math.random(200,300)
 		return bird
 	elseif(type == "jellyfish") then
 		return Obstacle(type, type, x, y, 16, 32, {50, 50, 200, 170}, game.animations.jellyfish)
 	elseif(type == "badfish") then
-		local fish = Obstacle(type, type, x, y, 16, 16, {250, 50, 200, 170})
+		local fish = Obstacle(type, type, x, y, 16, 16, {250, 50, 200, 170}, game.animations.fish)
 		fish.speed = math.random(100,200)
 		return fish
 	elseif(type == "stupidfish") then
-		local fish = Obstacle(type, type, x, y, 16, 16, {250, 50, 200, 170})
+		local fish = Obstacle(type, type, x, y, 16, 16, {250, 50, 200, 170}, game.animations.fish)
 		fish.speed = 150
 		return fish
 	elseif(type == "stalactite") then
-		return Obstacle(type, type, x, y, 32, 105, {200, 200, 200, 170})
+		return Obstacle(type, type, x, y, 28, 105, {200, 200, 200, 170}, nil, game.sprites.stalactite)
 	end
 end
 

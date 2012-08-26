@@ -6,15 +6,20 @@ game = Gamestate.new()
 function game:init()
 	self.sprites = {
 		jellyfish = love.graphics.newImage("img/jellyfish.png"),
-		cactus = love.graphics.newImage("img/cactus.png"),
-		runner = love.graphics.newImage("img/runner.png")
+		cactus = love.graphics.newImage("img/stalagmite.png"),
+		runner = love.graphics.newImage("img/runner.png"),
+		stalactite = love.graphics.newImage("img/stalactite.png"),
+		fish = love.graphics.newImage("img/fish.png"),
+		bird = love.graphics.newImage("img/bird.png")
 	}
 	for _,pic in pairs(self.sprites) do
 		pic:setFilter("nearest", "nearest")
 	end
 	self.animations = {
 		jellyfish = newAnimation(self.sprites.jellyfish, 16, 32, 0.3, 0),
-		runner = newAnimation(self.sprites.runner, 64, 64, 0.07, 0)
+		runner = newAnimation(self.sprites.runner, 64, 64, 0.07, 0),
+		fish = newAnimation(self.sprites.fish, 16, 16, 0.5, 0),
+		bird = newAnimation(self.sprites.bird, 32, 16, 0.1, 0)
 	}
 	self.animations.jellyfish:setMode("bounce")
 end
@@ -44,7 +49,7 @@ function game:enter()
 	self.levels.ceiling:setObstacles({{x=3300, type="stalactite"},{x=1000, type="stalactite"},{x=800, type="stalactite"}, {x=800, type="stalactite"}, {x=800, type="stalactite"}})
 
 	obstacleOffset = self.levels.swim1.x1
-	self.levels.swim1:setObstacles({{type="stupidfish",x=3000,y=0},{type="stupidfish",x=800,y=50},{type="stupidfish",x=800,y=0},{type="stupidfish",x=500,y=-100},{type="stupidfish",x=500,y=0},{type="stupidfish",x=500,y=0},{type="stupidfish",x=0,y=-100},{type="stupidfish",x=800,y=50},{type="stupidfish",x=0,y=-100},{type="stupidfish",x=200,y=0},{type="stupidfish",x=0,y=-150},{type="stupidfish",x=200,y=50},{type="stupidfish",x=0,y=-100}, {type="badfish",x=600,y=0}, {type="badfish", x=400,y=0}, {type="badfish", x=700,y=0}, {type="badfish", x=0, y=-300},{type="badfish", x=700,y=0}, {type="badfish", x=0, y=-300},{type="badfish", x=700,y=65}, {type="badfish", x=0, y=-300}})
+	self.levels.swim1:setObstacles({{type="jellyfish",x=3000,y=0},{type="stupidfish",x=800,y=50},{type="stupidfish",x=800,y=0},{type="jellyfish",x=500,y=-100},{type="stupidfish",x=500,y=0},{type="stupidfish",x=500,y=0},{type="stupidfish",x=0,y=-100},{type="stupidfish",x=800,y=50},{type="stupidfish",x=0,y=-100},{type="stupidfish",x=200,y=0},{type="jellyfish",x=0,y=-150},{type="stupidfish",x=200,y=50},{type="stupidfish",x=0,y=-100}, {type="badfish",x=600,y=0}, {type="badfish", x=400,y=0}, {type="badfish", x=700,y=0}, {type="badfish", x=0, y=-300},{type="badfish", x=700,y=0}, {type="badfish", x=0, y=-300},{type="badfish", x=700,y=65}, {type="badfish", x=0, y=-300}})
 
 	obstacleOffset = self.levels.run2.x1
 	self.levels.ceiling:setObstacles({{x=1000, type="stalactite"},
@@ -98,9 +103,9 @@ function game:enter()
 	levels.ceiling2:setObstacles({{x=300,type="stalactite"}})
 	levels.run3:setObstacles({{x=300,type="cactus"}})
 	obstacleOffset = levels.swim2.x1
-	levels.swim2:setObstacles({{x=1800, y=-100, type="stupidfish"},{x=50, y=0, type="stupidfish"},{x=100, y=-100, type="badfish"},{x=50, y=0, type="badfish"}})
+	levels.swim2:setObstacles({{x=1800, y=-100, type="jellyfish"},{x=50, y=0, type="jellyfish"},{x=100, y=-100, type="badfish"},{x=50, y=0, type="badfish"}})
 	levels.swim2:setObstacles({{x=500, y=-100, type="stupidfish"},{x=50, y=0, type="stupidfish"},{x=100, y=-100, type="badfish"},{x=50, y=0, type="badfish"}})
-	levels.swim2:setObstacles({{x=500, y=-100, type="stupidfish"},{x=50, y=0, type="stupidfish"},{x=50, y=50, type="stupidfish"},{x=100, y=-100, type="badfish"},{x=50, y=0, type="badfish"}})
+	levels.swim2:setObstacles({{x=500, y=-100, type="stupidfish"},{x=50, y=0, type="jellyfish"},{x=50, y=50, type="stupidfish"},{x=100, y=-100, type="badfish"},{x=50, y=0, type="badfish"}})
 	levels.run4:setObstacles({{x=1800, y=120, type="stupidbird"},{x=0, y=150, type="stupidbird"},{ x=200, y=150, type="bird"}})
 --	self.levels.air:setObstacles({{x=3300, y=500, type="bird"}, {x=4500, y=500, type="stupidbird"}})
 end
