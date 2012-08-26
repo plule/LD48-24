@@ -10,6 +10,7 @@ require "gameover"
 
 function love.load()
 	Height = love.graphics.getHeight()
+	Width = love.graphics.getWidth()
 	Gamestate.switch(menu)
 end
 

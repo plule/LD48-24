@@ -85,8 +85,8 @@ function Player:update(dt)
 	-- Die conditions
 	if(self.form == "siren" and not self.swimming and self.onGround) then
 		self:die("air")
-	elseif((self.form == "runner" or self.form == "bird") and self.swimming) then
-		self:die("water")
+	--elseif((self.form == "runner" or self.form == "bird") and self.swimming) then
+	--	self:die("water")
 	elseif(self:getY() >= 800) then
 		self:die("ceiling")
 	elseif(self:getY() <= -500) then
@@ -115,8 +115,10 @@ function Player:update(dt)
 	self.y = self.y + self.speedy*dt
 	if(not self.swimming) then
 		self.speedy = self.speedy-5000*dt
-	else
+	elseif(form == "siren") then
 		self.speedy = self.speedy-self.speedy*0.05
+	else
+		self.speedy = self.speedy-5000*dt-self.speedy*0.05
 	end
 end
 
@@ -134,7 +136,7 @@ function Player:keypressed(key)
 		elseif(key == "down") then
 			self:crouch()
 		end
-	elseif(self.form == "bird") then
+	elseif(self.form == "bird" and not self.swimming) then
 		if(key == "up") then
 			self.speedy = 1000
 		end

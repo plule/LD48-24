@@ -22,7 +22,7 @@ function Level:draw()
 		love.graphics.polygon("fill",x1+slope,y, x2-slope,y, x2,Height, x2,3000, x1,3000, x1,Height)
 	elseif(self.type == "swim") then
 		love.graphics.setColor(0,0,255, 50)
-		love.graphics.rectangle("fill", x1, y, x2, 10000)
+		love.graphics.rectangle("fill", x1, y, x2-x1, 10000)
 	elseif(self.type == "ceiling") then
 		love.graphics.setColor(255,255,255, 170)
 		love.graphics.polygon("fill", x1,y, x2,y, x2,y-1000, x1,y-1000)
@@ -69,7 +69,6 @@ function Level:act_on(player)
 end
 
 function Level:setObstacles(obstacles)
-	self.obstacles = {}
 	for _,obstacle in ipairs(obstacles) do
 		local y = obstacle.y
 		local x = obstacle.x + obstacleOffset

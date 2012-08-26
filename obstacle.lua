@@ -33,7 +33,7 @@ function Obstacle.create(type, x, y)
 	if(type == "cactus") then
 		return Obstacle(type, type, x, y, 32, 60, {0,255,255,170}, nil, game.sprites.cactus)
 	elseif(type == "bird" or type == "stupidbird") then
-		local bird = Obstacle(type, type, x, y, 32, 10, {200, 200, 200, 170})
+		local bird = Obstacle(type, type, x, y, 32, 10, {0, 200, 200, 170})
 		bird.speed = math.random(200,300)
 		return bird
 	elseif(type == "jellyfish") then
@@ -42,37 +42,42 @@ function Obstacle.create(type, x, y)
 		local fish = Obstacle(type, type, x, y, 16, 16, {250, 50, 200, 170})
 		fish.speed = math.random(100,200)
 		return fish
+	elseif(type == "stupidfish") then
+		local fish = Obstacle(type, type, x, y, 16, 16, {250, 50, 200, 170})
+		fish.speed = 150
+		return fish
 	elseif(type == "stalactite") then
 		return Obstacle(type, type, x, y, 32, 105, {200, 200, 200, 170})
 	end
 end
 
 function Obstacle:update(dt)
-	if (self.type == "badfish") then
-		local player = game.player
-		if(player.swimming) then
-			local speed
-			if(player:getY() > self:getY()) then
-				speed = self.speed
-			else
-				speed = -self.speed
+	local player = game.player
+	if(self:getX()-player:getX() < Width and player:getX()-self:getX() < 200) then
+		if (self.type == "badfish") then
+			if(player.swimming) then
+				local speed
+				if(player:getY() > self:getY()) then
+					speed = self.speed
+				else
+					speed = -self.speed
+				end
+				
+				self.y = self:getY()+speed*dt
 			end
-
-			self.y = self:getY()+speed*dt
-		end
-	elseif (self.type == "bird") then
-		local player = game.player
-		if(not player.onGround) then
-			local speed
-			if(player:getY() > self:getY()) then
-				speed = self.speed
-			else
-				speed = -self.speed
+		elseif (self.type == "bird") then
+			if(not player.onGround) then
+				local speed
+				if(player:getY() > self:getY()) then
+					speed = self.speed
+				else
+					speed = -self.speed
+				end
+				self.y = self:getY()+speed*dt
 			end
-			self.y = self:getY()+speed*dt
+		elseif (self.type == "stupidbird" or self.type == "stupidfish") then
+			self.x = self:getX()-self.speed*dt
 		end
-	elseif (self.type == "stupidbird") then
-		self.x = self:getX()-speed*dt
 	end
 end
 
