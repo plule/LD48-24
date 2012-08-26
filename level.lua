@@ -8,25 +8,24 @@ Level = Class{
 		self.y = y
 		self.type = type
 		self.slope = 500
-		if(self.type == "run") then
-			self.drawy = Height - self.y
-		elseif(self.type == "swim") then
-			self.drawy = Height - self.y
-		end
-
+		self.obstacles = {}
 	end}
 
 function Level:draw()
+	local y = Height-self.y
+	local x1 = self.x1
+	local x2 = self.x2
+	
 	if(self.type == "run") then
 		love.graphics.setColor(255,255,255, 170)
-		local y = Height-self.y
-		local x1 = self.x1
-		local x2 = self.x2
 		local slope = self.slope
-		love.graphics.polygon("fill",x1+slope,y, x2-slope,y, x2,Height, x1,Height)
+		love.graphics.polygon("fill",x1+slope,y, x2-slope,y, x2,Height, x2,3000, x1,3000, x1,Height)
 	elseif(self.type == "swim") then
 		love.graphics.setColor(0,0,255, 50)
-		love.graphics.rectangle("fill", self.x1, self.drawy, self.x2, 10000)
+		love.graphics.rectangle("fill", x1, y, x2, 10000)
+	elseif(self.type == "ceiling") then
+		love.graphics.setColor(255,255,255, 170)
+		love.graphics.polygon("fill", x1,y, x2,y, x2,y-1000, x1,y-1000)
 	end
 	for _,obstacle in ipairs(self.obstacles) do
 		obstacle:draw()
@@ -46,13 +45,12 @@ end
 function Level:act_on(player)
 	local px,py,plx,ply = player:getX(), player:getY(), player:getLX(), player:getLY()
 	if(self.type == "run") then
-		if(px > self.x1 and px < self.x2 and player.y <= self:getY(player.x)) then
+		if(px > self.x1 and px < self.x2 and player.y <= self:getY(player.x)+1) then
 			player.y = self:getY(player.x)
+			if(player.speedy < 0) then player.speedy = 0 end
 			player.onGround = true
 		end
-	end
-
-	if(self.type == "swim") then
+	elseif(self.type == "swim") then
 		local breathing = true
 		if(px > self.x1 and px < self.x2 and py+ply < self:getY(player.x)) then
 			player.swimming = true
@@ -60,7 +58,14 @@ function Level:act_on(player)
 		if(px > self.x1 and px < self.x2 and py+ply < self:getY(game:getX())) then
 			player.breathing = false
 		end
+	elseif(self.type == "ceiling") then
+		if(px > self.x1 and px < self.x2 and player.y+player:getLY() >= self:getY(player.x)) then
+			player.y = self:getY(player.x)-player:getLY()
+			player.onCeiling = true
+		end
 	end
+
+
 end
 
 function Level:setObstacles(obstacles)
@@ -73,6 +78,8 @@ function Level:setObstacles(obstacles)
 			y = self:getY(x)
 			if (obstacle.type == "bird") then
 				y = y+50
+			elseif (obstacle.type == "stalactite") then
+				y = y-105
 			end
 		end
 		table.insert(self.obstacles, Obstacle.create(obstacle.type, x, y))

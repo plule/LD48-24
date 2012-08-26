@@ -2,12 +2,15 @@ Class = require "hump.class"
 Timer = require "hump.timer"
 Gamestate = require "hump.gamestate"
 tween = require "tween"
+require "AnAL"
 
 require "game"
+require "menu"
+require "gameover"
 
 function love.load()
 	Height = love.graphics.getHeight()
-	Gamestate.switch(game)
+	Gamestate.switch(menu)
 end
 
 function love.update(dt)

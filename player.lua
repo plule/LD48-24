@@ -39,7 +39,8 @@ local reasons = {
 		water = "You are not a flying fish. Sorry.",
 		ground = "You crashed on the ground. Be careful.",
 		jellyfish = "This is not supposed to happened.",
-		ceiling = "Like Icare, you died."}
+		ceiling = "Like Icare, you died.",
+		fall = "You forgot to use you wings."}
 }
 
 function Player:draw()
@@ -63,13 +64,13 @@ function Player:draw()
 end
 
 function Player:jump()
-	if(self.onGround) then
+	if(not self:acting()) then
 		self.speedy = 1100
 	end
 end
 
 function Player:crouch()
-	if(self.onGround) then
+	if(not self:acting()) then
 		self.crouchid = tween(0.25, self, {crouchy = 16}, 'outCubic',
 							  function()
 								  self.crouchid = tween(0.25, self, {crouchy = 0}, 'inCubic',
@@ -86,6 +87,10 @@ function Player:update(dt)
 		self:die("air")
 	elseif((self.form == "runner" or self.form == "bird") and self.swimming) then
 		self:die("water")
+	elseif(self:getY() >= 800) then
+		self:die("ceiling")
+	elseif(self:getY() <= -500) then
+		self:die("fall")
 	end
 
 	-- Input
@@ -147,10 +152,11 @@ function Player:die(reason)
 	self.dieText = reasons[self.form][reason]
 	if(self.dieText == nil) then self.dieText = "You died." end
 	Timer.add(1, function() self.dieText = "" end)
+	--Gamestate.switch(gameover, self.dieText)
 end
 
 function Player:acting()
-	return (self.jumpid ~= nil) or (self.crouchid ~= nil)
+	return (not self.onGround) or (self.crouchid ~= nil)
 end
 
 function Player:getX()

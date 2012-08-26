@@ -40,6 +40,8 @@ function Obstacle.create(type, x, y)
 		local fish = Obstacle(type, type, x, y, 16, 16, {250, 50, 200, 170})
 		fish.speed = math.random(100,200)
 		return fish
+	elseif(type == "stalactite") then
+		return Obstacle(type, type, x, y, 32, 105, {200, 200, 200, 170})
 	end
 end
 
@@ -54,6 +56,17 @@ function Obstacle:update(dt)
 				speed = -self.speed
 			end
 
+			self.y = self:getY()+speed*dt
+		end
+	elseif (self.type == "bird") then
+		local player = game.player
+		if(not player.onGround) then
+			local speed
+			if(player:getY() > self:getY()) then
+				speed = self.speed
+			else
+				speed = -self.speed
+			end
 			self.y = self:getY()+speed*dt
 		end
 	end
