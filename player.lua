@@ -5,6 +5,10 @@ Player = Class{
 		self.y = y
 		self.lx = 60
 		self.ly = 60
+		
+		self.spriteLX = 64
+		self.spriteLY = 64
+
 		self.speedy = 0
 		self.crouchy = 0
 		self.crouchid = nil
@@ -51,13 +55,20 @@ function Player:draw()
 	love.graphics.print("onGround "..tostring(self.onGround), self:getX(), Height-self:getY()-85)
 	love.graphics.print("form     "..self.form, self:getX(), Height-self:getY()-70)
 	love.graphics.print("die      "..self.dieText, self:getX(), Height-self:getY()-55)
-	if(self.crouchid ~= nil) then
-		love.graphics.setColor(255,0,255, 170)
-		if(not self.breathing) then
-			love.graphics.setColor(255, 0, 0, 170)
+	if(not self.onGround) then
+		if(self.speedy > 0) then
+			game.animations.jumpup:draw(self:getX()-self.spriteLX/2, Height-self.spriteLY-self:getY())
+		else
+			game.animations.jumpdown:draw(self:getX()-self.spriteLX/2, Height-75-self:getY())
 		end
-		love.graphics.rectangle(
-			"fill", self:getX()-self:getLX()/2, Height-self:getY()-self:getLY(), self:getLX(), self:getLY())
+	elseif(self.crouchid ~= nil) then
+--		love.graphics.setColor(255,0,255, 170)
+--		if(not self.breathing) then
+--			love.graphics.setColor(255, 0, 0, 170)
+--		end
+--		love.graphics.rectangle(
+--			"fill", self:getX()-self:getLX()/2, Height-self:getY()-self:getLY(), self:getLX(), self:getLY())
+		game.animations.crouch:draw(self:getX()-self.spriteLX/2, Height-self.spriteLY-self:getY())
 	else
 		love.graphics.setColor(255,255,255)
 		game.animations.runner:draw(self:getX()-self:getLX()/2, Height-self:getY()-self:getLY())
@@ -72,6 +83,7 @@ end
 
 function Player:crouch()
 	if(not self:acting()) then
+		game.animations.crouch:reset()
 		self.crouchid = tween(0.25, self, {crouchy = 16}, 'outCubic',
 							  function()
 								  self.crouchid = tween(0.25, self, {crouchy = 0}, 'inCubic',
@@ -157,7 +169,8 @@ function Player:transformTo(form)
 	if(self.transformation) then
 		Timer.cancel(self.transformation)
 	end
-	self.transformation = Timer.add(3, function() self.form = form end)
+	game.transformsound:play()
+	self.transformation = Timer.add(2, function() self.form = form end)
 end
 
 function Player:die(reason)

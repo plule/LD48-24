@@ -8,6 +8,9 @@ function game:init()
 		jellyfish = love.graphics.newImage("img/jellyfish.png"),
 		cactus = love.graphics.newImage("img/stalagmite.png"),
 		runner = love.graphics.newImage("img/runner.png"),
+		crouch = love.graphics.newImage("img/crouch.png"),
+		jumpup = love.graphics.newImage("img/jump.png"),
+		jumpdown = love.graphics.newImage("img/jumpdown.png"),
 		stalactite = love.graphics.newImage("img/stalactite.png"),
 		fish = love.graphics.newImage("img/fish.png"),
 		bird = love.graphics.newImage("img/bird.png")
@@ -18,11 +21,17 @@ function game:init()
 	self.animations = {
 		jellyfish = newAnimation(self.sprites.jellyfish, 16, 32, 0.3, 0),
 		runner = newAnimation(self.sprites.runner, 64, 64, 0.07, 0),
+		crouch = newAnimation(self.sprites.crouch, 64, 64, 0.1, 0),
+		jumpup = newAnimation(self.sprites.jumpup, 64, 64, 0.07, 0),
+		jumpdown = newAnimation(self.sprites.jumpdown, 64, 75, 0.07,0),
 		fish = newAnimation(self.sprites.fish, 16, 16, 0.5, 0),
 		bird = newAnimation(self.sprites.bird, 32, 16, 0.1, 0)
 	}
 	self.animations.jellyfish:setMode("bounce")
+--	self.animations.crouch:setMode("once")
 	self.music = love.audio.newSource("snd/music.ogg", "stream")
+	self.transformsound = love.audio.newSource("snd/chouing2.ogg", "static")
+	self.transformsound:setVolume(0.3)
 end
 
 function game:enter()
