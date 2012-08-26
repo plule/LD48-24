@@ -9,6 +9,7 @@ Player = Class{
 		self.crouchy = 0
 		self.crouchid = nil
 		self.breathe = 1
+		self.airtime = 1
 		self.breathing = true
 		self.swimming = false
 		self.onGround = false
@@ -28,7 +29,7 @@ local reasons = {
 	siren = {
 		cactus = "I don't know how it's possible, but a cactus killed you while you were a fish.",
 		bird = "A water-bird killed you.",
-		air = "You can't breathe in the air with gills",
+		air = "You can't stay too long out of water in this form.",
 		fall = "You are not a flying fish. Sorry.",
 		water = "Even a siren can drown.",
 		jellyfish = "Be careful of the jellyfishes. It's a bad thing. Really.",
@@ -83,11 +84,11 @@ end
 
 function Player:update(dt)
 	-- Die conditions
-	if(self.form == "siren" and not self.swimming and self.onGround) then
-		self:die("air")
+	--if(self.form == "siren" and not self.swimming and self.onGround) then
+	--	self:die("air")
 	--elseif((self.form == "runner" or self.form == "bird") and self.swimming) then
 	--	self:die("water")
-	elseif(self:getY() >= 800) then
+	if(self:getY() >= 800) then
 		self:die("ceiling")
 	elseif(self:getY() <= -500) then
 		self:die("fall")
@@ -109,6 +110,15 @@ function Player:update(dt)
 		end
 	else
 		self.breathe = 1
+	end
+
+	if(self.form == "siren" and not self.swimming) then
+		self.airtime = self.airtime - dt / 2
+		if(self.airtime < 0) then
+			self:die("air")
+		end
+	else
+		self.airtime = 1
 	end
 
 	-- Science
