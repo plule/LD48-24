@@ -10,11 +10,11 @@ osxapp=love-bin/love.app
 lin32=love-bin/love32
 lin64=love-bin/love64
 
-game=ld
+game=run_and_transform
 sources=*.lua */*.lua
-res=
+res=snd/*.ogg img/*.png
 readme=README
-version=snaphsot
+version=1.1
 
 distname = $(game)-$(version)
 
@@ -26,7 +26,7 @@ run : test
 test :
 	$(luac) -p $(sources)
 
-dist : love win lin32 lin64
+dist : love win lin32 lin64 osx
 
 love : $(builddir)/$(game).love
 	cp $(builddir)/$(game).love $(distdir)/$(game).love
@@ -49,7 +49,7 @@ lin32 : $(builddir)/$(game)-i686
 
 lin64 : $(builddir)/$(game)-x86_64
 	mkdir -p $(distdir)/$(distname)
-	cp $(builddir)/$(game)-i686 $(readme) $(distdir)/$(distname)
+	cp $(builddir)/$(game)-x86_64 $(readme) $(distdir)/$(distname)
 	cd $(distdir); zip -q -r $(distname)-x86_64.lin.zip $(distname)
 	rm -rf $(distdir)/$(distname)
 

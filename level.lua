@@ -24,14 +24,14 @@ function Level:draw()
 	local x2 = self.x2
 	
 	if(self.type == "run") then
-		love.graphics.setColor(255,255,255, 170)
+		love.graphics.setColor(150,150,150)
 		local slope = self.slope
 		love.graphics.polygon("fill",x1+slope,y, x2-slope,y, x2,Height, x2,3000, x1,3000, x1,Height)
 	elseif(self.type == "swim") then
-		love.graphics.setColor(0,0,255, 50)
+		love.graphics.setColor(75,106,110)
 		love.graphics.rectangle("fill", x1, y, x2-x1, 10000)
 	elseif(self.type == "ceiling") then
-		love.graphics.setColor(255,255,255, 170)
+		love.graphics.setColor(150,150,150)
 		love.graphics.polygon("fill", x1,y, x2,y, x2,y-1000, x1,y-1000)
 	end
 	for _,obstacle in ipairs(self.obstacles) do

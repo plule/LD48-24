@@ -11,6 +11,10 @@ require "gameover"
 function love.load()
 	Height = love.graphics.getHeight()
 	Width = love.graphics.getWidth()
+	Music = love.audio.newSource("snd/music.ogg", "static")
+	BigFont = love.graphics.newFont(50)
+	Font = love.graphics.newFont(30)
+	SmallFont = love.graphics.newFont(20)
 	Gamestate.switch(menu)
 end
 
@@ -27,6 +31,9 @@ function love.draw()
 end
 
 function love.keypressed(key)
+	if(key == "escape") then
+		Gamestate.switch(menu)
+	end
 	Gamestate.keypressed(key)
 end
 

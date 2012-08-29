@@ -25,24 +25,31 @@ Player = Class{
 
 local reasons = {
 	runner = {
-		cactus = "You ran into a cactus.",
-		bird = "A bird killed you. It's a bad bird.",
-		water = "Your lung are full of water. You die.",
-		jellyfish = "Somehow you manage to be killed by a jellyfish before drowning",
-		fall = "You broke your legs."},
+		cactus = "You ran into a stalagmite.\nIt was more aggressive than expected.",
+		stalactite = "You should have crouched.\nNow you are dead.",
+		bird = "A bird killed you.\nIt's a bad bird.",
+		water = "Your lung are full of water.\nYou die.",
+		jellyfish = "Somehow you manage to be killed\nby a jellyfish before drowning",
+		fall = "You broke your legs.",
+		stupidbird = "This bird wasn't aggressive.\nBad place, bad time."
+	},
 	siren = {
-		cactus = "I don't know how it's possible, but a cactus killed you while you were a fish.",
+		cactus = "I don't know how it's possible,\nbut a stalagmite killed you while you were a fish.",
 		bird = "A water-bird killed you.",
-		air = "You can't stay too long out of water in this form.",
-		fall = "You are not a flying fish. Sorry.",
+		air = "You can't stay too long\nout of water in this form.",
+		fall = "You die under water's pressure.",
 		water = "Even a siren can drown.",
-		jellyfish = "Be careful of the jellyfishes. It's a bad thing. Really.",
-		badfish = "This is a bad fish. Not a friend."},
+		jellyfish = "Be careful of the jellyfishes.\nIt's a bad thing. Really.",
+		badfish = "This is a bad fish.\nNot a friend.",
+		stupidfish = "Why did you try to\nhug a fish?"},
+	
 	bird = {
-		cactus = "A cactus destroyed your wings. You die out of sadness.",
+		cactus = "A stalagmite destroyed your wings.\nYou die out of sadness.",
+		stalactite = "Nope, birds can't crouch.\nSorry.",
 		bird = "This bird was stronger than you.",
-		water = "You are not a flying fish. Sorry.",
-		ground = "You crashed on the ground. Be careful.",
+		stupidbird = "Avoid other birds.\nThey have hard beak.",
+		water = "You are not a flying fish.\nSorry.",
+		ground = "You crashed on the ground.\nBe careful.",
 		jellyfish = "This is not supposed to happened.",
 		ceiling = "Like Icare, you died.",
 		fall = "You forgot to use you wings."}
@@ -51,12 +58,24 @@ local reasons = {
 function Player:draw()
 	love.graphics.setColor(255,255,255)
 --	love.graphics.print("level    "..self:getLevel().id, self:getX(), Height-self:getY()-130)
-	love.graphics.print("breathe  "..tostring(self.breathe), self:getX(), Height-self:getY()-115)
-	love.graphics.print("swimming "..tostring(self.swimming), self:getX(), Height-self:getY()-100)
-	love.graphics.print("onGround "..tostring(self.onGround), self:getX(), Height-self:getY()-85)
-	love.graphics.print("form     "..self.form, self:getX(), Height-self:getY()-70)
-	love.graphics.print("die      "..self.dieText, self:getX(), Height-self:getY()-55)
-	if(not self.onGround) then
+	-- love.graphics.print("breathe  "..tostring(self.breathe), self:getX(), Height-self:getY()-115)
+	-- love.graphics.print("swimming "..tostring(self.swimming), self:getX(), Height-self:getY()-100)
+	-- love.graphics.print("onGround "..tostring(self.onGround), self:getX(), Height-self:getY()-85)
+	-- love.graphics.print("form     "..self.form, self:getX(), Height-self:getY()-70)
+	-- love.graphics.print("die      "..self.dieText, self:getX(), Height-self:getY()-55)
+	if(self.form == "siren") then
+		if(self.speedy > 0) then
+			game.animations.sirenup:draw(self:getX()-self.spriteLX/2, Height-self.spriteLY-self:getY())
+		else
+			game.animations.sirendown:draw(self:getX()-self.spriteLX/2, Height-self.spriteLY-self:getY())
+		end
+	elseif(self.form == "bird") then
+		if(self.speedy > 0) then
+			game.animations.birdup:draw(self:getX()-self.spriteLX/2, Height-75-self:getY())
+		else
+			game.animations.birddown:draw(self:getX()-self.spriteLX/2, Height-75-self:getY())
+		end
+	elseif(not self.onGround) then
 		if(self.speedy > 0) then
 			game.animations.jumpup:draw(self:getX()-self.spriteLX/2, Height-self.spriteLY-self:getY())
 		else
@@ -71,8 +90,10 @@ function Player:draw()
 --			"fill", self:getX()-self:getLX()/2, Height-self:getY()-self:getLY(), self:getLX(), self:getLY())
 		game.animations.crouch:draw(self:getX()-self.spriteLX/2, Height-self.spriteLY-self:getY())
 	else
-		love.graphics.setColor(255,255,255)
 		game.animations.runner:draw(self:getX()-self.spriteLX/2, Height-self:getY()-self.spriteLY)
+	end
+	if(self.transformation) then
+		game.animations.magic:draw(self:getX()-self.spriteLX/2, Height-self:getY()-self.spriteLY)
 	end
 end
 
@@ -146,11 +167,11 @@ function Player:update(dt)
 end
 
 function Player:keypressed(key)
-	if(key == "f1") then
+	if(key == "f1" or key == "1" or key == "c") then
 		self:transformTo("runner")
-	elseif(key == "f2") then
+	elseif(key == "f2" or key == "2" or key == "v") then
 		self:transformTo("siren")
-	elseif(key == "f3") then
+	elseif(key == "f3" or key == "3" or key == "b") then
 		self:transformTo("bird")
 	end
 	if(self.form == "runner") then
@@ -171,17 +192,18 @@ function Player:transformTo(form)
 		Timer.cancel(self.transformation)
 	end
 	game.transformsound:play()
-	self.transformation = Timer.add(2, function() self.form = form end)
+	self.transformation = Timer.add(2, function()
+										self.form = form
+										self.transformation = nil
+									   end)
 end
 
 function Player:die(reason)
-	print("---------------------")
-	print("die : "..reason)
-	self.dieText = reasons[self.form][reason]
-	if(self.dieText == nil) then self.dieText = "You died." end
-	print(self.dieText)
-	--Timer.add(1, function() self.dieText = "" end)
-	Gamestate.switch(gameover, self.dieText, self:getLevel())
+	if(game.winfader == nil) then
+		self.dieText = reasons[self.form][reason]
+		if(self.dieText == nil) then self.dieText = "You died." end
+		Gamestate.switch(gameover, self.dieText, self:getLevel())
+	end
 end
 
 function Player:inLevel(level, since)
@@ -189,9 +211,7 @@ function Player:inLevel(level, since)
 end
 
 function Player:getLevel()
-	print("getlevel")
 	local level = self:getLevelFind()
-	print(level.id)
 	if(game.startlevel ~= nil and game.startlevel.order > level.order) then
 		return game.startlevel
 	else

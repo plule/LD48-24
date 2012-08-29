@@ -10,12 +10,13 @@ function gameover:enter(previous, message, level)
 	self.previous = previous
 	self.message = message
 	self.level = level
-	print("gameover : "..level.id)
 end
 
 function gameover:draw()
 	love.graphics.setColor(255,255,255)
-	love.graphics.print("Game Over : "..self.message.."\nPress Enter to retry", 100, 100)
+	love.graphics.setFont(SmallFont)
+	love.graphics.print("Game Over : "..self.message, 10, 50)
+	love.graphics.print("Press Enter to retry", 10, 500)
 end
 
 function gameover:keypressed(key)

@@ -1,1 +1,6 @@
-Ludum Dare 24 game (evolution)
+Run and Escape is a Ludum Dare 24 game (evolution) by Pierre Lulé.
+
+It has been made with LÖVE (love2d.org) with the following libraries :
+   - hump by vrld
+   - AnAL by Bartbes
+   - tween.lua by kikito
